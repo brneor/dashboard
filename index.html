@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Jquery and plugins -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Page setup -->
+    <link rel="icon" href="imgs/favicon.ico" type="image/png">
+    <title>Home screen</title>
+  </head>
+  <body class="py-5">
+    <div class="container">
+      <div class="row my-4">
+        <div class="col">
+          <!-- Barra de progresso da água -->
+          <div id="water_progress_container" class="progress" style="height: 20px;">
+            <div id="water_progress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-between my-4">
+        <div class="col">
+          <button type="button" class="btn btn-outline-primary" onclick="addConsumedWater(620);">620ml</button>
+          <button type="button" class="btn btn-outline-primary" onclick="addConsumedWater(240);">Chá</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-danger float-right" onclick="resetConsumedWater();">Resetar</button>
+          <button type="button" class="btn btn-primary mx-1 float-right" onclick="setDailyGoal();">Objetivo</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      updateProgress();
+
+      function addConsumedWater(water) {
+        if (Cookies.get('MyConsumedWater') == "NaN") {
+          Cookies.set('MyConsumedWater', 0)
+        }
+        Cookies.set('MyConsumedWater', parseInt(Cookies.get('MyConsumedWater')) + parseInt(water));
+        updateProgress();
+      }
+
+      function resetConsumedWater() {
+        if (confirm("Deseja resetar o progresso do dia?")) {
+          Cookies.set('MyConsumedWater', 0);
+          $('#water_progress').css('width', "0%");
+        }
+      }
+
+      function updateProgress() {
+        // Atualiza o progresso
+        var newProgress = parseInt(Cookies.get('MyConsumedWater')) * 100 / Cookies.get('MyDailyWater');
+
+        $('#water_progress').css('width', newProgress + "%");
+        $('#water_progress').html(Cookies.get('MyConsumedWater') + "ml de " + Cookies.get('MyDailyWater') + "ml");
+      }
+
+      function setDailyGoal() {
+        Cookies.set('MyDailyWater', prompt("Informe o seu objetivo de consumo diário de água", 6000))
+
+        updateProgress();
+      }
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
