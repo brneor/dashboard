@@ -61,7 +61,7 @@
         var newProgress = parseInt(Cookies.get('MyConsumedWater')) * 100 / Cookies.get('MyDailyWater');
 
         $('#water_progress').css('width', newProgress + "%");
-        $('#water_progress').html(Cookies.get('MyConsumedWater') + "ml de " + Cookies.get('MyDailyWater') + "ml");
+        $('#water_progress').html(parseInt(Cookies.get('MyDailyWater')) - parseInt(Cookies.get('MyConsumedWater')) + "ml para " + Cookies.get('MyDailyWater') + "ml");
       }
 
       function setDailyGoal() {
