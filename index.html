@@ -12,28 +12,60 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+    <!-- OpenIconic CSS -->
+    <link href="open-iconic/font/css/open-iconic.css" rel="stylesheet">
+
     <!-- Page setup -->
     <link rel="icon" href="imgs/favicon.ico" type="image/png">
     <title>Home screen</title>
   </head>
   <body class="py-5">
     <div class="container">
-      <div class="row my-4">
-        <div class="col">
-          <!-- Barra de progresso da água -->
-          <div id="water_progress_container" class="progress" style="height: 20px;">
-            <div id="water_progress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-        </div>
+      <div class="row">
+        <div class="col"><h1>Dashboard pessoal</h1></div>
       </div>
-      <div class="row justify-content-between my-4">
-        <div class="col">
-          <button type="button" class="btn btn-outline-primary" onclick="addConsumedWater(620);">620ml</button>
-          <button type="button" class="btn btn-outline-primary" onclick="addConsumedWater(240);">Chá</button>
-        </div>
-        <div class="col">
-          <button type="button" class="btn btn-danger float-right" onclick="resetConsumedWater();">Resetar</button>
-          <button type="button" class="btn btn-primary mx-1 float-right" onclick="setDailyGoal();">Objetivo</button>
+      <div class="row my-4">
+        <div class="col-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Consumo de água</h5>
+              <div class="row my-4">
+              <div class="col">
+                <!-- Barra de progresso da água -->
+                <div id="water_progress_container" class="progress" style="height: 20px;">
+                  <div id="water_progress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-between my-4">
+              <div class="col-8">
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="addConsumedWater(620);">+ 620ml</button>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="addConsumedWater(240);">+ Chá</button>
+              </div>
+              <div class="col-4">
+                <div class="dropdown float-right mx-1">
+                  <button class="btn btn-outline-secondary border-0" type="button" id="dropdownAddWater" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="oi" data-glyph="cog" title="cog" aria-hidden="true"></span>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownAddWater">
+                    <a class="dropdown-item" href="#" onclick="setDailyGoal();">Objetivo</a>
+                    <a class="dropdown-item" href="#" onclick="resetConsumedWater();">Resetar</a>
+                  </div>
+                </div>
+
+                <!-- <div class="dropdown float-right">
+                  <button class="btn btn-outline-primary border-0" type="button" id="dropdownAddWater" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="oi" data-glyph="plus" title="plus" aria-hidden="true"></span>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownAddWater">
+                    <a class="dropdown-item" href="#" onclick="addConsumedWater(620);">620ml</a>
+                    <a class="dropdown-item" href="#" onclick="addConsumedWater(240);">Chá (240ml)</a>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
