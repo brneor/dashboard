@@ -49,21 +49,24 @@
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownAddWater">
                     <a class="dropdown-item" href="#" onclick="setDailyGoal();">Objetivo</a>
-                    <a class="dropdown-item" href="#" onclick="resetConsumedWater();">Resetar</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-danger" href="#" onclick="resetConsumedWater();">Resetar</a>
                   </div>
                 </div>
-
-                <!-- <div class="dropdown float-right">
-                  <button class="btn btn-outline-primary border-0" type="button" id="dropdownAddWater" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="oi" data-glyph="plus" title="plus" aria-hidden="true"></span>
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownAddWater">
-                    <a class="dropdown-item" href="#" onclick="addConsumedWater(620);">620ml</a>
-                    <a class="dropdown-item" href="#" onclick="addConsumedWater(240);">Chá (240ml)</a>
-                  </div>
-                </div> -->
               </div>
             </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Tempo agora</h5>
+              <!-- <div class="card-img"><img src="https://openweathermap.org/themes/openweathermap/assets/vendor/owm/img/widgets/01d.png"></div> -->
+              <div class="card-info">
+                <p><span id="w_city_name"></span> <span class="display-4" id="w_temperature"></span></p>
+                <p><span id="w_condition"></span></p>
+              </div>
             </div>
           </div>
         </div>
@@ -71,14 +74,22 @@
     </div>
 
     <script type="text/javascript">
-      updateProgress();
+      var cLatitude;
+      var cLongitude;
 
+      updateWaterProgress();
+      getCurrentWeather();
+
+      if (Cookies.get('MyDailyWater') == "NaN") {
+        setDailyGoal();
+      }
+      
       function addConsumedWater(water) {
         if (Cookies.get('MyConsumedWater') == "NaN") {
           Cookies.set('MyConsumedWater', 0)
         }
         Cookies.set('MyConsumedWater', parseInt(Cookies.get('MyConsumedWater')) + parseInt(water));
-        updateProgress();
+        updateWaterProgress();
       }
 
       function resetConsumedWater() {
@@ -88,18 +99,56 @@
         }
       }
 
-      function updateProgress() {
+      function updateWaterProgress() {
         // Atualiza o progresso
         var newProgress = parseInt(Cookies.get('MyConsumedWater')) * 100 / Cookies.get('MyDailyWater');
 
         $('#water_progress').css('width', newProgress + "%");
-        $('#water_progress').html(parseInt(Cookies.get('MyDailyWater')) - parseInt(Cookies.get('MyConsumedWater')) + "ml para " + Cookies.get('MyDailyWater') + "ml");
+        if (parseInt(Cookies.get('MyDailyWater')) > parseInt(Cookies.get('MyConsumedWater'))) {
+          $('#water_progress').html(parseInt(Cookies.get('MyDailyWater')) - parseInt(Cookies.get('MyConsumedWater')) + "ml para " + Cookies.get('MyDailyWater') + "ml");
+        } else {
+          $('#water_progress').html(parseInt(Cookies.get('MyConsumedWater')) - parseInt(Cookies.get('MyDailyWater')) + "ml além dos " + Cookies.get('MyDailyWater') + "ml");
+        }
       }
 
       function setDailyGoal() {
         Cookies.set('MyDailyWater', prompt("Informe o seu objetivo de consumo diário de água", 6000))
 
-        updateProgress();
+        updateWaterProgress();
+      }
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(getCurrentWeather);
+        } else { 
+          console.log("Geolocation is not supported by this browser.");
+        }
+      }
+
+      function showPosition(position) {
+        cLatitude = position.coords.latitude;
+        cLongitude = position.coords.longitude;
+      }
+
+      function getCurrentWeather(position) {
+        getLocation();
+        $.getJSON("http://api.openweathermap.org/data/2.5/weather?q=Juiz%20de%20Fora,br&units=metric&lang=pt&appid=7e01f095d76cf844258dbdb57cef6073", function() {
+        // $.getJSON("http://api.openweathermap.org/data/2.5/weather?lat="+cLatitude+"&lon="+cLongitude+"&units=metric&lang=pt&appid=7e01f095d76cf844258dbdb57cef6073", function() {
+          console.log("success");
+        })
+        .done(function(data) {
+          console.log( "second success" );
+          console.log(data.name + ": " + data.main.temp + "°C");
+          $('#w_city_name').html(data.name);
+          $('#w_temperature').html(data.main.temp + "°C");
+          $('#w_condition').html(data.weather[0].description.substr(0,1).toUpperCase()+data.weather[0].description.substr(1));
+        })
+        .fail(function() {
+          console.log( "error" );
+        })
+        .always(function() {
+          console.log( "complete" );
+        });
       }
     </script>
 
