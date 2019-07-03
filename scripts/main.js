@@ -16,12 +16,13 @@ function main() {
     setDailyGoal();
   }
 
+  fullyUpdateLog();
 
 }
 
-function logWater(am) {
+function writeConsumedWaterLog(am) {
   var today = new Date();
-  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var time = today.getHours() + ":" + today.getMinutes(); // + ":" + today.getSeconds();
   
   varWaterLog.push({timestamp: time, amount: am});
   localStorage.setItem('waterLog', JSON.stringify(varWaterLog));
@@ -30,7 +31,9 @@ function logWater(am) {
 function fullyUpdateLog() {
   for (var i = varWaterLog.length - 1; i >= 0; i--) {
     var listItem = document.createElement("li");
-    varWaterLog[i];
+    listItem.className = ("list-group-item border-0");
+    listItem.innerHTML = (varWaterLog[i].timestamp + " - " + varWaterLog[i].amount + "ml");
+    $("#logList").append(listItem);
   }
 }
 
@@ -40,6 +43,7 @@ function addConsumedWater(water) {
   }
   Cookies.set('MyConsumedWater', parseInt(Cookies.get('MyConsumedWater')) + parseInt(water));
   updateWaterProgress();
+  writeConsumedWaterLog(water);
 }
 
 function resetConsumedWater() {
