@@ -1,3 +1,20 @@
+// $theme-colors: (
+//   "primary": #268BD2,
+//   "secondary": #B58900,
+//   "success": #859900,
+//   "info": #2AA198,
+//   "warning": #CB4B16,
+//   "danger": #DC322F,
+//   "light": #FDF6E3,
+//   "dark": #002B36,
+//   "contrast": #D33682,
+//   "content-light": #93A1A1,
+//   "content-dark": #586E75,
+//   "solarized-dark": #002B36
+// );
+
+@import "../bootstrap/scss/bootstrap";
+
 %small-label {
   font-size: 0.8rem;
 }

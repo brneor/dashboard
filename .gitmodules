@@ -1,3 +1,6 @@
 [submodule "open-iconic"]
 	path = open-iconic
 	url = https://github.com/iconic/open-iconic
+[submodule "bootstrap"]
+	path = bootstrap
+	url = https://github.com/twbs/bootstrap
