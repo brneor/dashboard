@@ -1,6 +1,27 @@
+.refresh-button, .updated-at-label {
+  font-size: 0.8rem;
+}
+
+.updated-at-label-smaller {
+  font-size: 0.7rem;
+}
+
+.bottle, .tea {
+  background-repeat: no-repeat;
+  background-size: 20px;
+  background-position: 0 50%;
+}
+
 .refresh-button {
-  font-size: 10px;
   cursor: pointer;
+}
+
+.bottle {
+  background-image: url("../imgs/water.png");
+}
+
+.tea {
+  background-image: url("../imgs/tea.png");
 }
 
 /*# sourceMappingURL=style.css.map */

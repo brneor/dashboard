@@ -1,15 +1,24 @@
 var cLatitude;
 var cLongitude;
 var varWaterLog = $.parseJSON('[]');
+var varTodoList = $.parseJSON('[]');
 
 function main() {
   updateWaterProgress();
   getCurrentWeather();
 
+  // Inicializa o JSON do log de água
   if (localStorage.getItem('waterLog') == null) {
     localStorage.setItem('waterLog', JSON.stringify(varWaterLog));
   } else {
     varWaterLog = $.parseJSON(localStorage.getItem('waterLog'));
+  }
+
+  // Inicializa o JSON da ToDo List
+  if (localStorage.getItem('TodoList') == null) {
+    localStorage.setItem('TodoList', JSON.stringify(varTodoList));
+  } else {
+    varTodoList = $.parseJSON(localStorage.getItem('TodoList'));
   }
 
   if (Cookies.get('MyDailyWater') == "NaN") {
@@ -17,24 +26,78 @@ function main() {
   }
 
   fullyUpdateLog();
-
+  fullyUpdateTodo();
+  var intervalID = setInterval(function(){getCurrentWeather();}, 300000);
 }
 
 function writeConsumedWaterLog(am) {
-  var today = new Date();
-  var time = today.getHours() + ":" + today.getMinutes(); // + ":" + today.getSeconds();
+  var time = getCurrentTime();
   
   varWaterLog.push({timestamp: time, amount: am});
   localStorage.setItem('waterLog', JSON.stringify(varWaterLog));
 }
 
+function fullyUpdateTodo() {
+  for (var i = 0; i < varTodoList.length; i++) {
+    addTodoItem(i, varTodoList[i].todo, varTodoList[i].done); 
+  }
+}
+
 function fullyUpdateLog() {
+  var typeConsumed;
+
+  // Clear log first.
+  var logList = $("#logList")[0];
+  while (logList.firstChild) {
+      logList.removeChild(logList.firstChild);
+  }
+
   for (var i = varWaterLog.length - 1; i >= 0; i--) {
+    typeConsumed = ((varWaterLog[i].amount > 600) ? "bottle" : "tea" ); 
     var listItem = document.createElement("li");
-    listItem.className = ("list-group-item border-0");
-    listItem.innerHTML = (varWaterLog[i].timestamp + " - " + varWaterLog[i].amount + "ml");
+    listItem.className = ("list-group-item px-0 pl-4 py-2 " + typeConsumed);
+    listItem.innerHTML = (
+      "<span>"+ varWaterLog[i].amount + "ml" +"</span>" +
+      "<span class='float-right'>"+ varWaterLog[i].timestamp +"</span>"
+    );
     $("#logList").append(listItem);
   }
+
+  updateLastLabel();
+}
+
+function addNewTodo() {
+  if ($('#txtNewTodoItem').val() != "") {
+    var newID = varTodoList.length;
+    varTodoList.push({id: newID, todo: $('#txtNewTodoItem').val(), done: "0"});
+    localStorage.setItem('TodoList', JSON.stringify(varTodoList));
+
+    addTodoItem(newID, $('#txtNewTodoItem').val());
+
+    $('#txtNewTodoItem').val("");
+  }
+}
+
+function addTodoItem(id, todo, done) {
+  done = ((done == 1) ? "checked" : "" ); 
+
+  var newTodoListItem = document.createElement("li");
+  newTodoListItem.className = ("list-group-item px-0 py-2 ");
+  newTodoListItem.innerHTML = (
+    "<div class='form-check'>" +
+    "<input class='form-check-input' type='hidden' value='' id='listItemN"+ id +"'>" +
+    "<input class='form-check-input' type='checkbox' value='' id='listItem"+ id +"' "+done+" onclick='taskDone(this);'>" +
+    "<label class='form-check-label' for='listItem"+ id +"'>" + todo +
+    "</label></div>"
+  );
+  $("#todoList").append(newTodoListItem);
+}
+
+function taskDone(t) {
+  // console.log($(t).prop('checked'));
+  var taskID = $(t).attr('id').slice(8);
+  varTodoList[taskID].done = $(t).prop('checked') ? 1 : 0;
+  localStorage.setItem('TodoList', JSON.stringify(varTodoList));
 }
 
 function addConsumedWater(water) {
@@ -44,13 +107,17 @@ function addConsumedWater(water) {
   Cookies.set('MyConsumedWater', parseInt(Cookies.get('MyConsumedWater')) + parseInt(water));
   updateWaterProgress();
   writeConsumedWaterLog(water);
+  fullyUpdateLog();
 }
 
 function resetConsumedWater() {
   if (confirm("Deseja resetar o progresso do dia?")) {
     Cookies.set('MyConsumedWater', 0);
     updateWaterProgress();
+    varWaterLog = $.parseJSON('[]');
+    localStorage.setItem('waterLog', JSON.stringify(varWaterLog));
   }
+  fullyUpdateLog();
 }
 
 function updateWaterProgress() {
@@ -101,6 +168,7 @@ function getCurrentWeather(position) {
     $('#w_city_name').html(data.name);
     $('#w_temperature').html(data.main.temp + "°C");
     $('#w_condition').html(data.weather[0].description.substr(0,1).toUpperCase()+data.weather[0].description.substr(1));
+    $('#w_updated').html(getCurrentTime());
   })
   .fail(function() {
     console.log( "error" );
@@ -109,3 +177,33 @@ function getCurrentWeather(position) {
     console.log( "complete" );
   });
 }
+
+function getCurrentTime() {
+  const options = {
+    timeZone:"America/Sao_Paulo",
+    hour12 : false,
+    hour:  "2-digit",
+    minute: "2-digit",
+    // second: "numeric"
+  }
+
+  var today = new Date();
+  var time = today.getHours() + ":" + today.getMinutes(); // + ":" + today.getSeconds();
+
+  return today.toLocaleTimeString("en-US", options);
+}
+
+function updateLastLabel() {
+  var lastLog = varWaterLog[varWaterLog.length - 1];
+  $('#lastWaterLogEntry').html("Último registro às " + lastLog.timestamp + " - " + lastLog.amount + "ml");
+}
+
+// Eventos do Bootstrap
+
+$('#collapseWaterLog').on('show.bs.collapse', function() {
+  $('#btnLogMore').html('Ver menos');
+})
+
+$('#collapseWaterLog').on('hide.bs.collapse', function() {
+  $('#btnLogMore').html('Ver mais');
+})
