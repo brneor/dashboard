@@ -4,6 +4,10 @@ var varWaterLog = $.parseJSON('[]');
 var varTodoList = $.parseJSON('[]');
 
 function main() {
+  if (!localStorage.getItem('MyDailyWater') || localStorage.getItem('MyDailyWater') === 'null') {
+    setDailyGoal();
+  }
+
   updateWaterProgress();
   getCurrentWeather();
 
@@ -19,10 +23,6 @@ function main() {
     localStorage.setItem('TodoList', JSON.stringify(varTodoList));
   } else {
     varTodoList = $.parseJSON(localStorage.getItem('TodoList'));
-  }
-
-  if (Cookies.get('MyDailyWater') == "NaN") {
-    setDailyGoal();
   }
 
   fullyUpdateLog();
@@ -127,10 +127,10 @@ function taskDone(t) {
 }
 
 function addConsumedWater(water) {
-  if (Cookies.get('MyConsumedWater') == "NaN") {
-    Cookies.set('MyConsumedWater', 0)
+  if (!localStorage.getItem('MyConsumedWater')) {
+    localStorage.setItem('MyConsumedWater', 0)
   }
-  Cookies.set('MyConsumedWater', parseInt(Cookies.get('MyConsumedWater')) + parseInt(water));
+  localStorage.setItem('MyConsumedWater', parseInt(localStorage.getItem('MyConsumedWater')) + parseInt(water));
   updateWaterProgress();
   writeConsumedWaterLog(water);
   fullyUpdateLog();
@@ -148,7 +148,7 @@ function resetConsumedWater(silent) {
 }
 
 function _resetConsumedWater() {
-  Cookies.set('MyConsumedWater', 0);
+  localStorage.setItem('MyConsumedWater', 0);
   updateWaterProgress();
   varWaterLog = $.parseJSON('[]');
   localStorage.setItem('waterLog', JSON.stringify(varWaterLog));
@@ -156,21 +156,21 @@ function _resetConsumedWater() {
 
 function updateWaterProgress() {
   // Atualiza o progresso
-  var newProgress = parseInt(Cookies.get('MyConsumedWater')) * 100 / Cookies.get('MyDailyWater');
+  var newProgress = parseInt(localStorage.getItem('MyConsumedWater')||0) * 100 / localStorage.getItem('MyDailyWater');
 
   $('#water_progress').css('width', newProgress + "%");
   
-  $('#water_consumed').html(parseInt(Cookies.get('MyConsumedWater')) + "ml");
+  $('#water_consumed').html(parseInt(localStorage.getItem('MyConsumedWater') || 0) + "ml");
 
-  if (parseInt(Cookies.get('MyDailyWater')) > parseInt(Cookies.get('MyConsumedWater'))) {
-    $('#water_progress').html(parseInt(Cookies.get('MyDailyWater')) - parseInt(Cookies.get('MyConsumedWater')) + "ml para " + Cookies.get('MyDailyWater') + "ml");
+  if (parseInt(localStorage.getItem('MyDailyWater')) > parseInt(localStorage.getItem('MyConsumedWater')||0)) {
+    $('#water_progress').html(parseInt(localStorage.getItem('MyDailyWater')) - parseInt(localStorage.getItem('MyConsumedWater')||0) + "ml para " + localStorage.getItem('MyDailyWater') + "ml");
   } else {
-    $('#water_progress').html(parseInt(Cookies.get('MyConsumedWater')) - parseInt(Cookies.get('MyDailyWater')) + "ml além dos " + Cookies.get('MyDailyWater') + "ml");
+    $('#water_progress').html(parseInt(localStorage.getItem('MyConsumedWater')) - parseInt(localStorage.getItem('MyDailyWater')||0) + "ml além dos " + localStorage.getItem('MyDailyWater') + "ml");
   }
 }
 
 function setDailyGoal() {
-  Cookies.set('MyDailyWater', prompt("Informe o seu objetivo de consumo diário de água", 6000))
+  localStorage.setItem('MyDailyWater', prompt("Informe o seu objetivo de consumo diário de água", 6000))
 
   updateWaterProgress();
 }
@@ -232,7 +232,7 @@ function getCurrentTime() {
 
 function updateLastLabel() {
   var lastLog = varWaterLog[varWaterLog.length - 1];
-  $('#lastWaterLogEntry').html("Último registro às " + lastLog.timestamp + " - " + lastLog.amount + "ml");
+  if (lastLog) {$('#lastWaterLogEntry').html("Último registro às " + lastLog.timestamp + " - " + lastLog.amount + "ml")}
 }
 
 // Eventos do Bootstrap

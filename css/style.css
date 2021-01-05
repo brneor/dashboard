@@ -4244,14 +4244,15 @@ input[type="button"].btn-block {
 }
 
 .progress-bar {
+  background-color: #007bff;
+  color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: #fff;
+  padding: 4px;
   text-align: center;
-  white-space: nowrap;
-  background-color: #007bff;
   transition: width 0.6s ease;
+  white-space: nowrap;
 }
 @media (prefers-reduced-motion: reduce) {
   .progress-bar {
