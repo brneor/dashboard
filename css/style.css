@@ -9749,9 +9749,9 @@ a.text-dark:hover, a.text-dark:focus {
   font-size: 0.7rem;
 }
 
-.bottle, .tea {
+.bottle, .tea, .lata, .glass {
   background-repeat: no-repeat;
-  background-size: 20px;
+  background-size: 16px;
   background-position: 0 50%;
 }
 
@@ -9760,11 +9760,22 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .bottle {
-  background-image: url("../imgs/water.png");
+  background-image: url("../imgs/bottle.png");
+}
+
+.glass {
+  background-image: url("../imgs/glass.png");
 }
 
 .tea {
   background-image: url("../imgs/tea.png");
 }
 
+.lata {
+  background-image: url("../imgs/lata.png");
+}
+
+.dropdown {
+  display: inline;
+}
 /*# sourceMappingURL=style.css.map */

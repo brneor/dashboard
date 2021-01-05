@@ -28,6 +28,15 @@ function main() {
   fullyUpdateLog();
   fullyUpdateTodo();
   var intervalID = setInterval(function(){getCurrentWeather();}, 300000);
+
+  var now = new Date();
+  var millisTillReset = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0, 0, 0) - now;
+  if (millisTillReset < 0) {
+      millisTillReset += 86400000; // it's after 10am, try 10am tomorrow.
+  }
+  setTimeout(function(){
+    resetConsumedWater(true);
+  }, millisTillReset);
 }
 
 function writeConsumedWaterLog(am) {
@@ -53,7 +62,24 @@ function fullyUpdateLog() {
   }
 
   for (var i = varWaterLog.length - 1; i >= 0; i--) {
-    typeConsumed = ((varWaterLog[i].amount > 600) ? "bottle" : "tea" ); 
+    const x = varWaterLog[i].amount;
+    switch (true) {
+      case (x == 240):
+        typeConsumed = "tea";
+        break;
+      case (x == 330):
+        typeConsumed = "lata";
+      case (x == 350):
+        typeConsumed = "lata";
+        break;
+      case (x > 350 && x < 600):
+        typeConsumed = "glass";
+        break;
+      default:
+        typeConsumed = "bottle";
+        break;
+    }
+    // typeConsumed = ((varWaterLog[i].amount >= 500) ? "bottle" : "tea" ); 
     var listItem = document.createElement("li");
     listItem.className = ("list-group-item px-0 pl-4 py-2 " + typeConsumed);
     listItem.innerHTML = (
@@ -110,14 +136,22 @@ function addConsumedWater(water) {
   fullyUpdateLog();
 }
 
-function resetConsumedWater() {
-  if (confirm("Deseja resetar o progresso do dia?")) {
-    Cookies.set('MyConsumedWater', 0);
-    updateWaterProgress();
-    varWaterLog = $.parseJSON('[]');
-    localStorage.setItem('waterLog', JSON.stringify(varWaterLog));
+function resetConsumedWater(silent) {
+  if (silent) {
+    _resetConsumedWater();
+  } else {
+    if (confirm("Deseja resetar o progresso do dia?")) {
+      _resetConsumedWater();
+    }
   }
   fullyUpdateLog();
+}
+
+function _resetConsumedWater() {
+  Cookies.set('MyConsumedWater', 0);
+  updateWaterProgress();
+  varWaterLog = $.parseJSON('[]');
+  localStorage.setItem('waterLog', JSON.stringify(varWaterLog));
 }
 
 function updateWaterProgress() {
@@ -125,6 +159,9 @@ function updateWaterProgress() {
   var newProgress = parseInt(Cookies.get('MyConsumedWater')) * 100 / Cookies.get('MyDailyWater');
 
   $('#water_progress').css('width', newProgress + "%");
+  
+  $('#water_consumed').html(parseInt(Cookies.get('MyConsumedWater')) + "ml");
+
   if (parseInt(Cookies.get('MyDailyWater')) > parseInt(Cookies.get('MyConsumedWater'))) {
     $('#water_progress').html(parseInt(Cookies.get('MyDailyWater')) - parseInt(Cookies.get('MyConsumedWater')) + "ml para " + Cookies.get('MyDailyWater') + "ml");
   } else {
@@ -166,7 +203,7 @@ function getCurrentWeather(position) {
     console.log( "second success" );
     console.log(data.name + ": " + data.main.temp + "°C");
     $('#w_city_name').html(data.name);
-    $('#w_temperature').html(data.main.temp + "°C");
+    $('#w_temperature').html(data.main.temp.toFixed(1) + "°C");
     $('#w_condition').html(data.weather[0].description.substr(0,1).toUpperCase()+data.weather[0].description.substr(1));
     $('#w_updated').html(getCurrentTime());
   })

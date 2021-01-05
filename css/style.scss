@@ -44,10 +44,24 @@
 
 .bottle {
   @extend %background-icon;
-  background-image: url('../imgs/water.png');
+  background-image: url('../imgs/bottle.png');
+}
+
+.glass {
+  @extend %background-icon;
+  background-image: url('../imgs/glass.png');
 }
 
 .tea {
   @extend %background-icon;
   background-image: url('../imgs/tea.png');
+}
+
+.lata {
+  @extend %background-icon;
+  background-image: url('../imgs/lata.png');
+}
+
+.dropdown {
+  display: inline;
 }

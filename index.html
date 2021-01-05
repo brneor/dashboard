@@ -18,7 +18,7 @@
     <link href="open-iconic/font/css/open-iconic.css" rel="stylesheet">
 
     <!-- Page setup -->
-    <link rel="icon" href="imgs/favicon.ico" type="image/png">
+    <link rel="icon" href="imgs/favicon.png" type="image/png">
     <title>Home screen</title>
   </head>
   <body class="py-5 bg-light text-content-dark" onload="main();">
@@ -30,7 +30,10 @@
         <div class="col-12 col-md-6 col-lg-4 mb-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Água</h5>
+              <h5 class="card-title">
+                <span>Água</span>
+                <span class="float-right my-2 text-secondary updated-at-label-smaller">Total consumido: <span id="water_consumed"></span></span>
+              </h5>
               <div class="row my-4">
                 <div class="col">
                   <!-- Barra de progresso da água -->
@@ -40,11 +43,25 @@
                 </div>
               </div>
               <div class="row justify-content-between my-4">
-                <div class="col-6">
-                  <button type="button" class="btn btn-sm btn-outline-primary" onclick="addConsumedWater(620);">+ 620ml</button>
-                  <button type="button" class="btn btn-sm btn-outline-primary" onclick="addConsumedWater(240);">+ Chá</button>
+                <div class="col-10">
+                  <button type="button" class="btn btn-sm btn-outline-primary" onclick="addConsumedWater(450);">+ 450ml</button>
+                  <div class="dropdown"><button type="button" class="btn btn-sm btn-outline-primary" type="button" id="dropdownAddKetoade" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">+ Ketoade...</button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownAddKetoade">
+                    <a class="dropdown-item" href="#" onclick="addConsumedWater(500);">500ml</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" onclick="addConsumedWater(750);">750ml</a>
+                  </div></div>
+                  <!-- <button type="button" class="btn btn-sm btn-outline-primary" onclick="addConsumedWater(240);">+ Chá</button> -->
+                  <div class="dropdown"> 
+                    <button type="button" class="btn btn-sm btn-outline-primary" type="button" id="dropdownAddTea" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">+ Chá...</button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownAddTea">
+                    <a class="dropdown-item" href="#" onclick="addConsumedWater(240);">Chávena (240ml)</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" onclick="addConsumedWater(330);">Lata (330ml)</a>
+                  </div>
+                  </div>
                 </div>
-                <div class="col-6">
+                <div class="col-2">
                   <div class="dropdown float-right mx-1">
                     <button class="btn btn-outline-secondary border-0" type="button" id="dropdownAddWater" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <span class="oi" data-glyph="cog" title="cog" aria-hidden="true"></span>
